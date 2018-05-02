@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <img id="diaballikboard" src="diaballikgrid.png" alt="grid" hidden>
+        <img id="white" src="whitepiece.png" alt="white piece" hidden>
+        <img id="black" src="blackpiece.png" alt="black piece" hidden>
+        <style>
+            canvas {
+                border:1px solid black;
+                background-color:white;
+            }
+        </style>
+    </head>
+    <body onload="startgame()">
+        <script>
+            var pieces = [];
+            var squares = [];
+            var standardw;
+            var standardh;
+            function startgame() {
+                board.canvas.width = 1000;
+                board.canvas.height = 1000;
+                standardw = board.canvas.width/7;
+                standardh = board.canvas.height/7;
+                var i;
+                var mOne;
+                var mTwo;
+            //square setup
+                for (i = 0, mOne = 0, mTwo = 0; i<49; i++) {
+                    if (mOne <= 5) {
+                        squares[i] = new square(standardw*mOne,standardh*mTwo);
+                        mOne++;
+                    }
+                    else {
+                        squares[i] = new square(standardw*mOne,standardh*mTwo);
+                        mOne = 0;
+                        mTwo++;
+                    }
+                }
+            //piece setup
+                    //white
+                pieces[0] = new piece(0,"white");
+                pieces[1] = new piece(1,"white");
+                pieces[2] = new piece(2,"white");
+                pieces[3] = new piece(3,"white");
+                pieces[4] = new piece(4,"white");
+                pieces[5] = new piece(5,"white");
+                pieces[6] = new piece(6,"white");
+                    //black
+                pieces[7] = new piece(42,"black");
+                pieces[8] = new piece(43,"black");
+                pieces[9] = new piece(44,"black");
+                pieces[10] = new piece(45,"black");
+                pieces[11] = new piece(46,"black");
+                pieces[12] = new piece(47,"black");
+                pieces[13] = new piece(48,"black");
+
+                board.start();
+            }
+
+            var board = {
+                canvas:document.createElement("canvas"),
+                start:function() {
+                    this.canvas.width;
+                    this.canvas.height;
+                    this.context = this.canvas.getContext("2d");
+                    document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+                    this.interval = setInterval(updateboard,20);
+                },
+                clear:function() {
+                    ctx = this.context;
+                    ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
+                }
+            }
+
+            function piece(insquare,color,hasball) {
+                this.insquare = insquare;
+                this.x;
+                this.y;
+                this.color = document.getElementById(color);
+                this.update = function() {
+                    this.x = squares[this.insquare].x;
+                    this.y = squares[this.insquare].y;
+                    ctx = board.context;
+                    ctx.drawImage(this.color,this.x,this.y,board.canvas.width*.14,board.canvas.height*.14);
+                }
+            }
+
+            function square(x,y,occ) {
+                this.x = x;
+                this.y = y;
+                this.occ = occ;
+                this.checkocc = function() {
+                    var p;
+                    for (p in pieces) {
+                        if (pieces[p].x == this.x && pieces[p].y == this.y) {
+                            this.occ = true;
+                        }
+                        else {
+                            this.occ = false;
+                        }
+                    }
+                }
+            }
+
+            function updateboard() {
+                ctx = board.canvas.context;
+                var pOne;
+                var pTwo;
+                board.clear();
+                ctx.drawImage(document.getElementById("diaballikboard"),0,0,board.canvas.width,board.canvas.height);
+                for (pOne in squares) {
+                    squares[pOne].checkocc();
+                };
+                for (pTwo in pieces) {
+                    pieces[pTwo].update();
+                }
+            }
+        </script>
+    </body>
+</html>
